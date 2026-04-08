@@ -202,6 +202,8 @@ MouseArea {
             finalCmd = `grim -g "${geom}" "${tmpfile}" && swappy -f "${tmpfile}"`;
         }
 
+        root.cursorShape = Qt.BlankCursor;
+
         captureTimer.command = finalCmd;
         captureTimer.start();
     }
@@ -217,6 +219,9 @@ MouseArea {
         try {
             Hypr.extras.refreshOptions();
         } catch (e) {}
+
+        if (loader.freeze)
+            root.cursorShape = Qt.BlankCursor;
 
         clientFetcher.running = true;
 
@@ -312,9 +317,12 @@ MouseArea {
             captureSource: root.screen
 
             onHasContentChanged: {
-                if (hasContent && !root.loader.freeze) {
-                    overlay.visible = border.visible = true;
-                    root.save();
+                if (hasContent) {
+                    root.cursorShape = Qt.CrossCursor;
+                    if (!root.loader.freeze) {
+                        overlay.visible = border.visible = true;
+                        root.save();
+                    }
                 }
             }
         }
